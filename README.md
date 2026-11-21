@@ -17,6 +17,8 @@ bash scripts/train.sh configs/train_small.yaml
 前置：`C:\duck_work\microduck_rl` 已 `uv sync`、`C:\duck_work\bam` 在位（见 env-lock）。
 曲线：`uv run tensorboard --logdir C:/duck_work/microduck_rl/logs/rsl_rl`。
 
+容器化部署（从装 Docker 到 GPU 冒烟的全流程）：看 **[docs/docker-deploy.md](docs/docker-deploy.md)**——每步带命令、期望输出和故障跳转，2026-11-22 全程实测验证。
+
 ## 进度
 
 - [x] Day 1–2 环境固化：env-lock.md 全实测落盘
