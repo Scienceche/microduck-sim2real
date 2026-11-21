@@ -1,0 +1,8 @@
+# 大产物不进 git；每周把关键曲线截图和指标表提交进 reports/
+logs/
+checkpoints/
+*.onnx
+*.onnx.data
+*.pt
+wandb/
+__pycache__/

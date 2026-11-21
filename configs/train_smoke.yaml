@@ -1,0 +1,9 @@
+# 冒烟测试（上游 AGENTS.md:16 的既定口径）：只验证管线，不看曲线
+# 用法：bash scripts/train.sh configs/train_smoke.yaml
+task: Mjlab-Velocity-Flat-MicroDuck
+run_name: smoke
+num_envs: 64
+max_iterations: 5
+save_interval: 5
+seed: 42
+logger: tensorboard   # rsl_rl 默认 wandb，未登录会崩（troubleshooting #8）

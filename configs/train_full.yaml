@@ -1,0 +1,9 @@
+# 完整训练（占位：第一周不跑；数值待 Day 3 实测吞吐后定稿）
+# 用法：bash scripts/train.sh configs/train_full.yaml
+task: Mjlab-VelStand-Flat-MicroDuck   # 主线任务（行走+摔倒恢复+体态控制）
+run_name: full_placeholder
+num_envs: 4096
+max_iterations: 6000                  # VelStand 注册默认；≈ 4096×24×6000 ≈ 5.9e8 步
+save_interval: 250
+seed: 42
+logger: tensorboard

@@ -1,0 +1,16 @@
+# 用法（未验证，本机暂无 Docker）：docker compose run --rm train
+# 日志/权重落宿主机 C:\duck_work\microduck_rl\logs，容器随手删。
+services:
+  train:
+    image: microduck-train
+    build:
+      context: C:/duck_work          # Dockerfile 顶注：必须能同时看到 microduck_rl 与 bam
+      dockerfile: microduck-sim2real/docker/Dockerfile
+    gpus: all
+    environment:
+      - MUJOCO_GL=egl
+      - UV_HTTP_TIMEOUT=600
+    volumes:
+      - C:/duck_work/microduck_rl/logs:/opt/microduck_rl/logs
+      - C:/duck_work/microduck_rl/wandb:/opt/microduck_rl/wandb
+    # 覆盖示例：docker compose run --rm train uv run train <TASK> --env.scene.num-envs 1024 ...

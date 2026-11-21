@@ -1,0 +1,16 @@
+# 小规模训练基线（第一周唯一要跑的训练）
+# 用法：bash scripts/train.sh configs/train_small.yaml
+#
+# num_envs 阶梯：1024 → OOM 就 512 → 再 256。全量约定 4096（上游：训可用步态 1–2h）。
+# 取 1024 的理由：PPO 每 iter 样本 = num_envs × 24；64 env 时仅 1536/iter，环境多样性
+# 太差，曲线没有参考价值；1024 = 4096 的 1/4，既保守又出有意义的曲线。
+# 步数预算：1024 × 24 × 50 iter ≈ 1.23M env-steps（目标 5e5–1e6 达标）。
+# ⚠️ 注册默认 num_envs=1（docs/troubleshooting.md #6），本字段必填。
+
+task: Mjlab-Velocity-Flat-MicroDuck
+run_name: week1_small_baseline
+num_envs: 1024
+max_iterations: 50
+save_interval: 10      # 默认 250，50 iter 会一次都不存——改 10 保证中断也有 checkpoint
+seed: 42
+logger: tensorboard   # 无外部账号依赖；要上 wandb 就改回 wandb 并先 wandb login
