@@ -22,3 +22,8 @@
 
 ## 下周计划
 ⬜（候选：完整训练 train_full 定稿、评测口径校准、ONNX 导出对表、实机部署管线接线）
+
+## 补：Docker 交付（2026-11-22）
+- 镜像 microduck-train：build 成功 + GPU 冒烟 64×5 exit 0（~280 steps/s 容器内）
+- 三大坑已固化 troubleshooting #8(容器复发)/#9/#10：数据盘迁 E 盘是这台机器的
+  硬约束（C 盘放不下 CUDA 镜像构建峰值）

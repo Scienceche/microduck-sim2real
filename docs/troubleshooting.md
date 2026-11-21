@@ -51,5 +51,27 @@
 
 - **症状**：模型打印完后立刻退出 1，`wandb.errors.errors.UsageError: No API key
   configured`；且经重定向时 traceback 可能被缓冲吞掉，看起来像"无声死掉"。
-- **修复**：`--agent.logger tensorboard`（configs/*.yaml 已带 `logger: tensorboard`），
-  或先 `wandb login` 再用 wandb。排障时加 `PYTHONUNBUFFERED=1` 保证 traceback 可见。
+- **修复**：`--agent.logger tensorboard`（configs/*.yaml 已带 `logger: tensorboard`；
+  Dockerfile CMD 也带），或先 `wandb login` 再用 wandb。排障时加
+  `PYTHONUNBUFFERED=1` 保证 traceback 可见。
+- **复发记录**：2026-11-22 容器冒烟第一次退出 1——Dockerfile CMD 忘带该旗标，
+  同一坑在不同环境咬人，配置必须随环境走（不能只靠肌肉记忆）。
+
+## 9. `docker pull` 通、`docker build` 拉 FROM 却超时（2026-11-22）
+
+- **症状**：daemon 配好代理后 `docker pull hello-world` 正常，但 build 解析
+  `FROM docker.io/nvidia/cuda...` 时直连 auth.docker.io 超时（DNS 污染 IP）。
+- **根因**：BuildKit（containerd 存储）的 registry 解析不走 daemon 的 HTTP 代理。
+- **修复**：先用 daemon 路径预拉基础镜像（`docker pull nvidia/cuda:... `），
+  build 命中本地层即不再撞 registry。
+
+## 10. C 盘爆盘事故：一次 CUDA 镜像构建 ≈ 25GB 峰值（2026-11-22）
+
+- **症状**：构建本体全部成功（imports OK），死在"exporting/unpacking layers"：
+  `read-only file system`；C 盘 0 字节可用，docker_data.vhdx 涨到 26GB。
+- **根因**：containerd 导出+解包期间层内容存在约三份拷贝（buildkit 层 + tar 导出
+  + snapshot 解包），CUDA torch 镜像单层 ~8GB → 峰值 ~25GB；VHDX 只涨不缩。
+- **修复**：Docker Desktop → Settings → Resources → VM resources → Disk image
+  location 迁到 `E:\docker-wsl`（E 盘 245G 空闲）。附带教训：`UV_NO_CACHE=1` 让
+  uv 缓存不进层（层体积近半）；settings-store.json 手写 `wslDataFolder` 键无效，
+  只有 GUI 写的键才被引擎认。

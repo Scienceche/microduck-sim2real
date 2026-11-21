@@ -19,7 +19,8 @@ bash scripts/train.sh configs/train_small.yaml
 
 ## 进度
 
-- [x] Day 1–2 环境固化：env-lock.md 全实测落盘；Dockerfile 已写（**本机无 Docker，未验证**）
+- [x] Day 1–2 环境固化：env-lock.md 全实测落盘
+- [x] Docker 全链路（2026-11-22）：Desktop 4.99 装好（数据盘迁 E:\docker-wsl，代理 Clash 7897），镜像 build 成功（imports OK），GPU 容器冒烟 64×5 通过
 - [x] Day 3 小规模基线：1024 env × 50 iter 跑通（~11.5k steps/s，1.23M 步 @107 s，checkpoint 齐全）；显存峰值待下次旁挂记录
 - [ ] Day 4 读懂配置：train-repro.md 逐项标注
 - [ ] Day 5 数据流图：dataflow.md ⬜ 项补齐

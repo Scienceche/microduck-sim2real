@@ -62,8 +62,14 @@ Windows 上 PyPI 的 torch 是 CPU-only，pyproject 已用 `tool.uv.sources` 路
 > 网络维度（冒烟日志取证）：actor 观测 61 维 → MLP 512/256/128（ELU）→ 动作 14 维；
 > critic 观测 76 维（特权）。
 
-## Docker
+## Docker（✅ 2026-11-22 全链路验证通过）
 
-**本机未装 Docker**（`docker: command not found`，2026-11-21）。
-`docker/Dockerfile` 已写好但**未在本机构建验证**——验证是它变成"资产"的前提，
-装完 Docker Desktop 后第一件事跑 `docker/Dockerfile` 顶部的 build 命令并回填此处。
+| 项 | 值 |
+|---|---|
+| Docker Desktop | 4.99.0（winget 装），引擎 29.9.3，WSL2 后端 |
+| **数据盘位置** | `E:\docker-wsl\DockerDesktopWSL`（GUI 迁移；C 盘只剩系统盘空间，且一次 CUDA 镜像构建在 containerd 存储里要 ~25GB 峰值三份拷贝，C 盘根本放不下） |
+| 镜像 microduck-train | 内容 6.86GB / 磁盘 19.2GB；`imports OK`（build 内验证）+ GPU 冒烟 64×5 通过（~280 steps/s，比宿主机 820 慢，WSL2 直通 + warp 首编开销） |
+| 代理 | Docker Desktop 手动代理 → Clash `127.0.0.1:7897`（settings-store.json `OverrideProxyHTTP`）。**注意 BuildKit 解析器不走 daemon 代理**：`docker pull` 通不代表 `docker build` 拉 FROM 通——先预拉基础镜像（troubleshooting #9） |
+| apt 源 | 清华 TUNA（国内直连 archive.ubuntu.com 部分 .deb 502） |
+| 构建命令 | `docker build -f microduck-sim2real/docker/Dockerfile -t microduck-train C:/duck_work`（上下文必须是 duck_work；**C:\duck_work\.dockerignore 必须在位**，否则 .venv/日志全进上下文） |
+| GPU 冒烟 | `docker run --rm --gpus all microduck-train`（CMD 自带 64×5 + tensorboard logger） |
